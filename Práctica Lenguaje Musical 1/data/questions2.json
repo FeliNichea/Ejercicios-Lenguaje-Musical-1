@@ -1,0 +1,95 @@
+{
+  "title": "Lenguaje Musical - Ejercicios Personalizados",
+  "description": "Práctica de intervalos específicos generados a medida.",
+  "version": "1.0",
+  "questions": [
+    {
+      "id": 1,
+      "type": "classify",
+      "category": "1.1 Clasificar",
+      "title": "Clasifica el intervalo mostrado en el pentagrama",
+      "prompt": "Observa las dos notas en clave de sol e indica qué intervalo forman:",
+      "notes": [
+        {
+          "pitch": "Fa4",
+          "accidental": "#"
+        },
+        {
+          "pitch": "La4",
+          "accidental": ""
+        }
+      ],
+      "options": [
+        "2da M",
+        "3ra m",
+        "3ra M",
+        "4ta J",
+        "4ta A"
+      ],
+      "correctAnswer": "3ra m",
+      "explanation": "De Fa♯4 a La4 abarcamos 3 notas (Fa - Sol - La). La distancia de Fa♯ a Sol es de 1 semitono, y de Sol a La es de 1 tono. En total tenemos 1 tono y medio (3 semitonos). Por lo tanto, es una 3ra menor."
+    },
+    {
+      "id": 2,
+      "type": "classify",
+      "category": "1.1 Clasificar",
+      "title": "Clasifica el intervalo mostrado en el pentagrama",
+      "prompt": "Observa las dos notas en clave de sol e indica qué intervalo forman:",
+      "notes": [
+        {
+          "pitch": "Mi5",
+          "accidental": "b"
+        },
+        {
+          "pitch": "Si4",
+          "accidental": "b"
+        }
+      ],
+      "options": [
+        "4ta J",
+        "4ta A",
+        "5ta J",
+        "5ta d",
+        "3ra M"
+      ],
+      "correctAnswer": "4ta J",
+      "explanation": "Analizando la distancia entre Si♭4 y Mi♭5, abarcamos 4 nombres de notas (Si - Do - Re - Mi). De Si♭ a Do hay 1 tono, de Do a Re hay 1 tono, y de Re a Mi♭ hay medio tono. Esto suma un total de 2 tonos y medio (5 semitonos). Se trata de una 4ta Justa (descendente en el orden presentado)."
+    },
+    {
+      "id": 3,
+      "type": "complete",
+      "category": "1.2 Completar",
+      "title": "Completa el intervalo en el pentagrama",
+      "prompt": "A partir de <strong>Mi4</strong>, coloca en el pentagrama una <strong>3ra Mayor ascendente</strong>.",
+      "instruction": "Haz clic en el pentagrama para situar la nota y selecciona la alteración adecuada.",
+      "baseNote": {
+        "pitch": "Mi4",
+        "accidental": ""
+      },
+      "targetInterval": "3ra Mayor ascendente",
+      "targetSolution": {
+        "pitch": "Sol4",
+        "accidental": "#"
+      },
+      "explanation": "Para construir una 3ra Mayor ascendente desde Mi4, primero contamos 3 notas: Mi - Fa - Sol. La nota será un Sol. De Mi a Sol natural hay 1 tono y medio (Mi a Fa es 1/2 tono, Fa a Sol es 1 tono), lo cual forma una 3ra menor. Para llegar a los 2 tonos (4 semitonos) que requiere la 3ra Mayor, debemos ascender el Sol medio tono. La respuesta correcta es Sol sostenido (Sol♯4)."
+    },
+    {
+      "id": 4,
+      "type": "complete",
+      "category": "1.2 Completar",
+      "title": "Completa el intervalo en el pentagrama",
+      "prompt": "A partir de <strong>Re5</strong>, coloca en el pentagrama una <strong>2da menor descendente</strong>.",
+      "instruction": "Haz clic en el pentagrama para situar la nota y selecciona la alteración adecuada.",
+      "baseNote": {
+        "pitch": "Re5",
+        "accidental": ""
+      },
+      "targetInterval": "2da menor descendente",
+      "targetSolution": {
+        "pitch": "Do5",
+        "accidental": "#"
+      },
+      "explanation": "Para construir una 2da menor descendente desde Re5, bajamos al grado conjunto inmediato anterior, que es Do. El intervalo de 2da menor requiere una distancia exacta de 1 semitono. Como de Re a Do natural hay 1 tono (2 semitonos), necesitamos acortar la distancia elevando el Do. La respuesta correcta es Do sostenido (Do♯5)."
+    }
+  ]
+}
