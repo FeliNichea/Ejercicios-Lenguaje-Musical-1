@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Práctica de Lenguaje Musical 1 - Intervalos</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Encabezado de la Aplicación -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand-title">
+        <span class="brand-icon">𝄞</span>
+        <div>
+          <h1>Lenguaje Musical 1</h1>
+          <p class="brand-subtitle">Práctica y repaso interactivo de intervalos</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Indicador de Banco Activo -->
+        <span class="bank-tag" id="bank-tag" title="Banco de preguntas actual">Intervalos</span>
+
+        <!-- Botón para cargar nuevo archivo JSON -->
+        <button type="button" class="load-json-btn" id="load-json-btn" title="Cargar un archivo JSON con preguntas">
+          <span class="btn-icon">📁</span> Cargar Preguntas (JSON)
+        </button>
+        <input type="file" id="json-file-input" accept=".json,application/json" style="display: none;">
+
+        <!-- Filtro de modo de práctica -->
+        <nav class="filter-nav" aria-label="Modo de práctica">
+          <button class="filter-pill active" data-filter="all">Todas</button>
+          <button class="filter-pill" data-filter="classify">1.1 Clasificar</button>
+          <button class="filter-pill" data-filter="complete">1.2 Completar</button>
+          <button class="filter-pill" data-filter="scale-identify">2.1 Identificar Escala</button>
+          <button class="filter-pill" data-filter="scale-build">2.2 Construir Armadura</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="main-layout">
+
+    <!-- Tarjeta del Cuestionario -->
+    <article class="quiz-card" id="quiz-card">
+      <!-- Barra de Progreso -->
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+      </div>
+
+      <!-- Cabecera de la Pregunta -->
+      <header class="card-header">
+        <div class="counter-group">
+          <span class="badge" id="category-badge">1.1 Clasificar</span>
+          <span class="question-counter" id="question-counter">Pregunta 1 de 10</span>
+        </div>
+        <div class="score-badge" id="score-counter">Puntaje: 0</div>
+      </header>
+
+      <!-- Contenido de la Pregunta -->
+      <div class="card-body">
+        <h2 class="question-title" id="question-title">Cargando pregunta...</h2>
+        <p class="question-prompt" id="question-prompt"></p>
+        <p class="question-instruction" id="question-instruction" style="display: none;"></p>
+
+        <!-- Pentagrama Interactivo con Botones Laterales de Tamaño -->
+        <div class="stave-section-container">
+          <div class="stave-wrapper">
+            <div id="stave-container"></div>
+          </div>
+          <aside class="stave-lateral-controls" aria-label="Controles de tamaño del pentagrama">
+            <button type="button" class="zoom-btn" id="zoom-in-btn" title="Agrandar pentagrama (+)">
+              <span class="zoom-icon">＋</span>
+            </button>
+            <button type="button" class="zoom-btn" id="zoom-out-btn" title="Achicar pentagrama (−)">
+              <span class="zoom-icon">－</span>
+            </button>
+          </aside>
+        </div>
+
+        <!-- Múltiple Choice (Tipo 1.1: Clasificar) -->
+        <div class="options-grid" id="options-container">
+          <!-- Botones inyectados dinámicamente por js/quiz.js -->
+        </div>
+
+        <!-- Barra de Herramientas Interactiva (Tipo 1.2: Completar) -->
+        <div class="interactive-controls hidden" id="interactive-controls">
+          <div class="controls-row">
+            <!-- Selector de Alteraciones -->
+            <div class="accidental-picker">
+              <span class="control-label">Alteración:</span>
+              <div class="accidental-btn-group" role="group" aria-label="Alteración para la nota">
+                <button type="button" class="accidental-btn active" data-accidental="">
+                  <span>♮</span> Natural
+                </button>
+                <button type="button" class="accidental-btn" data-accidental="#">
+                  <span>♯</span> Sostenido
+                </button>
+                <button type="button" class="accidental-btn" data-accidental="b">
+                  <span>♭</span> Bemol
+                </button>
+              </div>
+            </div>
+
+            <!-- Indicador de Nota Colocada -->
+            <div class="note-status-box">
+              <div class="selected-note-info" id="selected-note-info">
+                Nota colocada: <span class="placeholder">Ninguna (haz clic en el pentagrama)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="primary-btn" id="confirm-answer-btn" disabled>
+              Confirmar respuesta
+            </button>
+          </div>
+        </div>
+
+        <!-- Controles para Tipo 2.1: Identificar Escala Mayor -->
+        <div class="scale-identify-controls hidden" id="scale-identify-controls">
+          <form class="scale-input-form" id="scale-form" onsubmit="return false;">
+            <div class="scale-input-wrapper">
+              <input type="text" id="scale-name-input" class="scale-input" placeholder="Ej: La Mayor, Re sostenido mayor, Mi bemol mayor..." autocomplete="off">
+              <button type="submit" class="primary-btn" id="check-scale-btn">Comprobar</button>
+            </div>
+            <p class="input-hint">Escribe el nombre de la escala (ejemplo: <em>La Mayor</em>, <em>La sostenido mayor</em>, <em>La bemol mayor</em>). No distingue mayúsculas o minúsculas.</p>
+          </form>
+        </div>
+
+        <!-- Controles para Tipo 2.2: Construir Armadura de Clave -->
+        <div class="scale-build-controls hidden" id="scale-build-controls">
+          <div class="controls-row">
+            <!-- Selector de Tipo de Alteración (♯ o ♭) -->
+            <div class="accidental-picker">
+              <span class="control-label">Tipo de alteración:</span>
+              <div class="accidental-btn-group" role="group" aria-label="Tipo de alteración para la armadura">
+                <button type="button" class="key-type-btn active" data-type="#">
+                  <span>♯</span> Sostenidos
+                </button>
+                <button type="button" class="key-type-btn" data-type="b">
+                  <span>♭</span> Bemoles
+                </button>
+              </div>
+            </div>
+
+            <!-- Botones de Acción sobre la Armadura -->
+            <div class="key-actions-group">
+              <button type="button" class="key-step-btn" id="add-key-acc-btn">＋ Agregar</button>
+              <button type="button" class="key-step-btn" id="remove-key-acc-btn">－ Quitar</button>
+              <button type="button" class="key-step-btn clear" id="clear-key-acc-btn">🗑 Limpiar</button>
+            </div>
+          </div>
+
+          <!-- Estado de la Armadura -->
+          <div class="armadura-status-bar">
+            <span class="armadura-status-text" id="armadura-status-text">
+              Armadura actual: <strong>Ninguna (0 alteraciones)</strong>
+            </span>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="primary-btn" id="confirm-armadura-btn">
+              Confirmar armadura
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenedor de Feedback Pedagógico -->
+        <div class="feedback-box hidden" id="feedback-container">
+          <div class="feedback-badge" id="feedback-badge">¡Correcto!</div>
+          <div class="feedback-text" id="feedback-text"></div>
+        </div>
+      </div>
+
+      <!-- Pie de Tarjeta con botón Siguiente -->
+      <footer class="card-footer">
+        <button type="button" class="next-btn hidden" id="next-question-btn">
+          Siguiente pregunta →
+        </button>
+      </footer>
+    </article>
+
+    <!-- Tarjeta de Resultados Finales -->
+    <article class="results-card hidden" id="results-card">
+      <div class="results-icon">🏆</div>
+      <h2 class="results-title">¡Cuestionario Completado!</h2>
+      <p>Has finalizado las preguntas seleccionadas de Lenguaje Musical 1.</p>
+
+      <div class="results-stats">
+        <div class="stat-item">
+          <span class="stat-value" id="results-score">0 de 0</span>
+          <span class="stat-label">Aciertos</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="results-percent">0%</span>
+          <span class="stat-label">Efectividad</span>
+        </div>
+      </div>
+
+      <p class="results-message" id="results-message"></p>
+
+      <button type="button" class="primary-btn" id="restart-btn">
+        ↻ Volver a intentar
+      </button>
+    </article>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/stave.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="data/defaultQuestions.js"></script>
+  <script src="js/quiz.js"></script>
+</body>
+</html>
