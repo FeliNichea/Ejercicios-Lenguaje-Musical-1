@@ -16,6 +16,26 @@ const DIATONIC_NAME_MAP = {
 
 const STANDARD_NAMES = ['Do', 'Re', 'Mi', 'Fa', 'Sol', 'La', 'Si'];
 
+const MAJOR_SCALES = [
+  { name: 'Do Mayor', tonic: 'Do', alt: '', type: '#', count: 0, steps: [0, 1, 2, 3, 4, 5, 6, 7], accidentalsText: 'Ninguna (0 alteraciones)' },
+  // Sostenidos
+  { name: 'Sol Mayor', tonic: 'Sol', alt: '', type: '#', count: 1, steps: [4, 5, 6, 7, 8, 9, 10, 11], accidentalsText: '1 sostenido (Fa♯)' },
+  { name: 'Re Mayor', tonic: 'Re', alt: '', type: '#', count: 2, steps: [1, 2, 3, 4, 5, 6, 7, 8], accidentalsText: '2 sostenidos (Fa♯, Do♯)' },
+  { name: 'La Mayor', tonic: 'La', alt: '', type: '#', count: 3, steps: [5, 6, 7, 8, 9, 10, 11, 12], accidentalsText: '3 sostenidos (Fa♯, Do♯, Sol♯)' },
+  { name: 'Mi Mayor', tonic: 'Mi', alt: '', type: '#', count: 4, steps: [2, 3, 4, 5, 6, 7, 8, 9], accidentalsText: '4 sostenidos (Fa♯, Do♯, Sol♯, Re♯)' },
+  { name: 'Si Mayor', tonic: 'Si', alt: '', type: '#', count: 5, steps: [-1, 0, 1, 2, 3, 4, 5, 6], accidentalsText: '5 sostenidos (Fa♯, Do♯, Sol♯, Re♯, La♯)' },
+  { name: 'Fa sostenido Mayor', tonic: 'Fa', alt: '#', type: '#', count: 6, steps: [3, 4, 5, 6, 7, 8, 9, 10], accidentalsText: '6 sostenidos (Fa♯, Do♯, Sol♯, Re♯, La♯, Mi♯)' },
+  { name: 'Do sostenido Mayor', tonic: 'Do', alt: '#', type: '#', count: 7, steps: [0, 1, 2, 3, 4, 5, 6, 7], accidentalsText: '7 sostenidos (Fa♯, Do♯, Sol♯, Re♯, La♯, Mi♯, Si♯)' },
+  // Bemoles
+  { name: 'Fa Mayor', tonic: 'Fa', alt: '', type: 'b', count: 1, steps: [3, 4, 5, 6, 7, 8, 9, 10], accidentalsText: '1 bemol (Si♭)' },
+  { name: 'Si bemol Mayor', tonic: 'Si', alt: 'b', type: 'b', count: 2, steps: [-1, 0, 1, 2, 3, 4, 5, 6], accidentalsText: '2 bemoles (Si♭, Mi♭)' },
+  { name: 'Mi bemol Mayor', tonic: 'Mi', alt: 'b', type: 'b', count: 3, steps: [2, 3, 4, 5, 6, 7, 8, 9], accidentalsText: '3 bemoles (Si♭, Mi♭, La♭)' },
+  { name: 'La bemol Mayor', tonic: 'La', alt: 'b', type: 'b', count: 4, steps: [5, 6, 7, 8, 9, 10, 11, 12], accidentalsText: '4 bemoles (Si♭, Mi♭, La♭, Re♭)' },
+  { name: 'Re bemol Mayor', tonic: 'Re', alt: 'b', type: 'b', count: 5, steps: [1, 2, 3, 4, 5, 6, 7, 8], accidentalsText: '5 bemoles (Si♭, Mi♭, La♭, Re♭, Sol♭)' },
+  { name: 'Sol bemol Mayor', tonic: 'Sol', alt: 'b', type: 'b', count: 6, steps: [4, 5, 6, 7, 8, 9, 10, 11], accidentalsText: '6 bemoles (Si♭, Mi♭, La♭, Re♭, Sol♭, Do♭)' },
+  { name: 'Do bemol Mayor', tonic: 'Do', alt: 'b', type: 'b', count: 7, steps: [0, 1, 2, 3, 4, 5, 6, 7], accidentalsText: '7 bemoles (Si♭, Mi♭, La♭, Re♭, Sol♭, Do♭, Fa♭)' }
+];
+
 class NoteParser {
   /**
    * Parsea una nota dada como objeto o string:
@@ -106,6 +126,45 @@ class NoteParser {
   }
 
   /**
+   * Normaliza un texto de nombre de escala mayor para comparación flexible:
+   * "La Mayor", "la mayor", "la sostenido mayor", "la bemol mayor", "La M", "Fa#", etc.
+   */
+  static normalizeScaleString(str) {
+    if (!str) return '';
+    let s = str.toString().toLowerCase().trim();
+    // Quitar marcas diacríticas/tildes
+    s = s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    // Normalizar símbolos
+    s = s.replace(/♯/g, ' sostenido ').replace(/#/g, ' sostenido ');
+    s = s.replace(/♭/g, ' bemol ');
+    // Abreviaturas como "sib" -> "si bemol", "mib" -> "mi bemol", "lab" -> "la bemol", etc.
+    s = s.replace(/\b(do|re|mi|fa|sol|la|si)b\b/g, '$1 bemol');
+    s = s.replace(/\b(do|re|mi|fa|sol|la|si)s\b/g, '$1 sostenido');
+    // Quitar palabras auxiliares
+    s = s.replace(/\bescala\b/g, '').replace(/\bde\b/g, '').replace(/\bmayor\b/g, '').replace(/\bm\b/g, '');
+    // Normalizar espacios
+    s = s.replace(/\s+/g, ' ').trim();
+    return s;
+  }
+
+  /**
+   * Busca una escala mayor en el diccionario por nombre o armadura
+   */
+  static findScale(query) {
+    if (!query) return null;
+    if (typeof query === 'object') {
+      if (query.type !== undefined && query.count !== undefined) {
+        return MAJOR_SCALES.find(s => s.type === query.type && s.count === query.count) || null;
+      }
+      if (query.name) {
+        query = query.name;
+      }
+    }
+    const norm = this.normalizeScaleString(query.toString());
+    return MAJOR_SCALES.find(s => this.normalizeScaleString(s.name) === norm) || null;
+  }
+
+  /**
    * Normaliza una pregunta cargada desde JSON
    */
   static normalizeQuestion(q, index) {
@@ -136,7 +195,7 @@ class NoteParser {
         explanation: q.explanation || 'Respuesta correcta.'
       };
     } else if (type === 'complete') {
-      // 1.2 Completar
+      // 1.2: Completar intervalo
       const baseNote = this.parse(q.baseNote || { pitch: 'Do4' });
       baseNote.x = 240;
 
@@ -154,82 +213,48 @@ class NoteParser {
         targetSolution: targetSolution,
         explanation: q.explanation || 'Respuesta correcta.'
       };
-    } else if (type === 'scale-identify') {
-      // 2.1 Identificar Escala Mayor a partir de Armadura
-      const keySig = q.keySignature || { type: '#', count: 0 };
-      const expectedScale = q.expectedScale || 'Do Mayor';
-      const canonical = this.normalizeScaleName(expectedScale);
-      const baseStep = q.baseStep !== undefined ? q.baseStep : this.inferScaleBaseStep(canonical);
+    } else if (type === 'scale_name' || type === 'scale_identify' || type === 'nombrar_escala') {
+      // 2.1: Nombrar escala a partir de armadura
+      const keySig = q.keySignature || { type: '#', count: 1 };
+      const resolvedScale = this.findScale(q.targetScale || keySig) || MAJOR_SCALES[1];
+      const targetName = q.targetScale || resolvedScale.name;
+      const scaleSteps = q.scaleSteps || resolvedScale.steps;
 
       return {
         id: id,
-        type: 'scale-identify',
-        category: q.category || '2.1 Escalas Mayores',
-        title: q.title || 'Identifica la escala mayor a partir de su armadura',
-        prompt: q.prompt || 'Observa la armadura de clave en el pentagrama y escribe el nombre de la escala mayor correspondiente:',
-        instruction: q.instruction || 'Escribe el nombre de la escala (ejemplo: "La Mayor", "La sostenido mayor" o "La bemol mayor").',
+        type: 'scale_name',
+        category: q.category || '2.1 Nombrar escala',
+        title: q.title || 'Identifica la escala mayor a partir de la armadura',
+        prompt: q.prompt || 'Observa la armadura de clave en el pentagrama y escribe el nombre de la escala mayor:',
+        instruction: q.instruction || 'Escribe el nombre de la escala (ej: "La Mayor", "Si bemol Mayor", "Fa sostenido Mayor"). No importa si usas mayúsculas o minúsculas.',
         keySignature: {
-          type: (keySig.type === 'b' ? 'b' : '#'),
+          type: (keySig.type === 'b' || keySig.type === '♭') ? 'b' : '#',
           count: parseInt(keySig.count, 10) || 0
         },
-        expectedScale: expectedScale,
-        canonicalExpected: canonical,
-        baseStep: baseStep,
-        explanation: q.explanation || `Corresponde a la escala de ${expectedScale}.`
+        targetScale: targetName,
+        scaleSteps: scaleSteps,
+        explanation: q.explanation || `¡Correcto! La armadura tiene ${resolvedScale.accidentalsText}, correspondiente a la escala de ${resolvedScale.name}.`
       };
-    } else if (type === 'scale-build') {
-      // 2.2 Construir Armadura de Clave para una Escala
-      const targetSig = q.targetKeySignature || { type: '#', count: 0 };
-      const targetScale = q.targetScale || 'Do Mayor';
+    } else if (type === 'scale_build' || type === 'scale_construct' || type === 'construir_armadura') {
+      // 2.2: Construir armadura para una escala mayor dada
+      const scaleName = q.scaleName || q.targetScale || 'Mi Mayor';
+      const resolvedScale = this.findScale(scaleName) || MAJOR_SCALES[4];
+      const targetKeySig = q.targetKeySignature || { type: resolvedScale.type, count: resolvedScale.count };
+      const scaleSteps = q.scaleSteps || resolvedScale.steps;
 
       return {
         id: id,
-        type: 'scale-build',
-        category: q.category || '2.2 Construir Armadura',
+        type: 'scale_build',
+        category: q.category || '2.2 Construir armadura',
         title: q.title || 'Construye la armadura de clave de la escala',
-        prompt: q.prompt || `Construye la armadura de clave correspondiente a <strong>${targetScale}</strong>:`,
-        instruction: q.instruction || 'Selecciona si la armadura lleva sostenidos o bemoles y utiliza los botones para agregar o quitar alteraciones.',
-        targetScale: targetScale,
-        targetKeySignature: {
-          type: (targetSig.type === 'b' ? 'b' : '#'),
-          count: parseInt(targetSig.count, 10) || 0
-        },
-        explanation: q.explanation || `La armadura de ${targetScale} lleva ${targetSig.count} ${targetSig.type === '#' ? 'sostenidos' : 'bemoles'}.`
+        prompt: q.prompt || `Construye la armadura de clave para la escala de <strong>${resolvedScale.name}</strong>:`,
+        instruction: q.instruction || 'Selecciona si lleva sostenidos o bemoles y coloca la cantidad exacta en la armadura.',
+        scaleName: resolvedScale.name,
+        targetKeySignature: targetKeySig,
+        scaleSteps: scaleSteps,
+        explanation: q.explanation || `¡Correcto! ${resolvedScale.name} lleva ${resolvedScale.accidentalsText}.`
       };
     }
-  }
-
-  /**
-   * Normaliza el texto ingresado por el usuario para nombres de escalas
-   * Admite: "la mayor", "la sostenido mayor", "la bemol mayor", "La#", "Lab Mayor", etc.
-   */
-  static normalizeScaleName(str) {
-    if (!str) return '';
-    return str
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Quitar acentos/tildes
-      .toLowerCase()
-      .replace(/escala\s+(de\s+)?/gi, '')
-      .replace(/mayor(es)?/gi, '')
-      .replace(/sostenid[oa]s?/gi, '#')
-      .replace(/sharp/gi, '#')
-      .replace(/bemol(es)?/gi, 'b')
-      .replace(/flat/gi, 'b')
-      .replace(/\s+/g, '')
-      .trim();
-  }
-
-  /**
-   * Deduce el paso diatónico de la tónica en el pentagrama para dibujar las notas
-   */
-  static inferScaleBaseStep(canonical) {
-    if (canonical.startsWith('do')) return 0;  // Do4
-    if (canonical.startsWith('re')) return 1;  // Re4
-    if (canonical.startsWith('mi')) return 2;  // Mi4
-    if (canonical.startsWith('fa')) return 3;  // Fa4
-    if (canonical.startsWith('sol')) return 4; // Sol4
-    if (canonical.startsWith('la')) return 5;  // La4
-    if (canonical.startsWith('si')) return -1; // Si3
-    return 0;
   }
 
   /**
@@ -253,4 +278,5 @@ class NoteParser {
   }
 }
 
+NoteParser.MAJOR_SCALES = MAJOR_SCALES;
 window.NoteParser = NoteParser;
