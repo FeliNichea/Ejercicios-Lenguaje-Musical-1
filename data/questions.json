@@ -1,4 +1,4 @@
-{
+window.DEFAULT_QUESTIONS_DATA = {
   "title": "Lenguaje Musical 1 - Banco de Intervalos",
   "description": "Práctica y repaso de intervalos (2das, 3ras y 4tas) en Clave de Sol",
   "version": "1.0",
@@ -10,10 +10,22 @@
       "title": "Clasifica el intervalo mostrado en el pentagrama",
       "prompt": "Observa las dos notas en clave de sol e indica qué intervalo forman:",
       "notes": [
-        { "pitch": "Do4", "accidental": "" },
-        { "pitch": "Mi4", "accidental": "" }
+        {
+          "pitch": "Do4",
+          "accidental": ""
+        },
+        {
+          "pitch": "Mi4",
+          "accidental": ""
+        }
       ],
-      "options": ["2da m", "2da M", "3ra m", "3ra M", "4ta J"],
+      "options": [
+        "2da m",
+        "2da M",
+        "3ra m",
+        "3ra M",
+        "4ta J"
+      ],
       "correctAnswer": "3ra M",
       "explanation": "¡Correcto! De Do4 a Mi4 hay una distancia de 3ra (Do - Re - Mi) y está compuesta por 2 tonos completos (4 semitonos). Por lo tanto, es una 3ra Mayor."
     },
@@ -24,10 +36,22 @@
       "title": "Clasifica el intervalo mostrado en el pentagrama",
       "prompt": "Observa las dos notas en clave de sol e indica qué intervalo forman:",
       "notes": [
-        { "pitch": "Mi4", "accidental": "" },
-        { "pitch": "Fa4", "accidental": "" }
+        {
+          "pitch": "Mi4",
+          "accidental": ""
+        },
+        {
+          "pitch": "Fa4",
+          "accidental": ""
+        }
       ],
-      "options": ["2da m", "2da M", "3ra m", "3ra M", "4ta J"],
+      "options": [
+        "2da m",
+        "2da M",
+        "3ra m",
+        "3ra M",
+        "4ta J"
+      ],
       "correctAnswer": "2da m",
       "explanation": "¡Correcto! De Mi4 a Fa4 hay una 2da (grados conjuntos inmediatos) con distancia de 1 semitono diatónico natural. Por lo tanto, es una 2da menor."
     },
@@ -38,10 +62,22 @@
       "title": "Clasifica el intervalo mostrado en el pentagrama",
       "prompt": "Observa las dos notas en clave de sol e indica qué intervalo forman:",
       "notes": [
-        { "pitch": "Do4", "accidental": "" },
-        { "pitch": "Mi4", "accidental": "b" }
+        {
+          "pitch": "Do4",
+          "accidental": ""
+        },
+        {
+          "pitch": "Mi4",
+          "accidental": "b"
+        }
       ],
-      "options": ["2da m", "2da M", "3ra m", "3ra M", "4ta J"],
+      "options": [
+        "2da m",
+        "2da M",
+        "3ra m",
+        "3ra M",
+        "4ta J"
+      ],
       "correctAnswer": "3ra m",
       "explanation": "¡Correcto! De Do4 a Mi♭4 abarca 3 nombres de notas (Do - Re - Mi) y tiene una distancia de 1 tono y medio (3 semitonos). Es una 3ra menor."
     },
@@ -52,10 +88,22 @@
       "title": "Clasifica el intervalo mostrado en el pentagrama",
       "prompt": "Observa las dos notas en clave de sol e indica qué intervalo forman:",
       "notes": [
-        { "pitch": "Sol4", "accidental": "" },
-        { "pitch": "Do5", "accidental": "" }
+        {
+          "pitch": "Sol4",
+          "accidental": ""
+        },
+        {
+          "pitch": "Do5",
+          "accidental": ""
+        }
       ],
-      "options": ["2da m", "2da M", "3ra m", "3ra M", "4ta J"],
+      "options": [
+        "2da m",
+        "2da M",
+        "3ra m",
+        "3ra M",
+        "4ta J"
+      ],
       "correctAnswer": "4ta J",
       "explanation": "¡Correcto! De Sol4 a Do5 abarca 4 notas (Sol - La - Si - Do) con una distancia de 2 tonos y medio (5 semitonos). Es una 4ta Justa."
     },
@@ -66,10 +114,22 @@
       "title": "Clasifica el intervalo mostrado en el pentagrama",
       "prompt": "Observa las dos notas en clave de sol e indica qué intervalo forman:",
       "notes": [
-        { "pitch": "Re4", "accidental": "" },
-        { "pitch": "Mi4", "accidental": "" }
+        {
+          "pitch": "Re4",
+          "accidental": ""
+        },
+        {
+          "pitch": "Mi4",
+          "accidental": ""
+        }
       ],
-      "options": ["2da m", "2da M", "3ra m", "3ra M", "4ta J"],
+      "options": [
+        "2da m",
+        "2da M",
+        "3ra m",
+        "3ra M",
+        "4ta J"
+      ],
       "correctAnswer": "2da M",
       "explanation": "¡Correcto! De Re4 a Mi4 es una 2da diatónica con distancia de 1 tono (2 semitonos). Es una 2da Mayor."
     },
@@ -80,9 +140,15 @@
       "title": "Completa el intervalo en el pentagrama",
       "prompt": "A partir de <strong>Do4</strong> (primera nota fija), coloca en el pentagrama una <strong>3ra Mayor ascendente</strong>.",
       "instruction": "Haz clic en la línea o espacio correspondiente para ubicar la nota. Puedes usar la barra de alteraciones si la nota requiere sostenido o bemol.",
-      "baseNote": { "pitch": "Do4", "accidental": "" },
+      "baseNote": {
+        "pitch": "Do4",
+        "accidental": ""
+      },
       "targetInterval": "3ra Mayor ascendente",
-      "targetSolution": { "pitch": "Mi4", "accidental": "" },
+      "targetSolution": {
+        "pitch": "Mi4",
+        "accidental": ""
+      },
       "explanation": "Para una 3ra Mayor ascendente desde Do4: contamos 3 notas (Do - Re - Mi), por lo que debe situarse en la 1ra línea (Mi). La distancia requerida es de 2 tonos (4 semitonos), lo que corresponde a Mi natural (Mi4)."
     },
     {
@@ -92,9 +158,15 @@
       "title": "Completa el intervalo en el pentagrama",
       "prompt": "A partir de <strong>Do4</strong>, coloca en el pentagrama una <strong>2da menor ascendente</strong>.",
       "instruction": "Haz clic en el pentagrama para situar la nota y selecciona la alteración adecuada (♮, ♯, ♭).",
-      "baseNote": { "pitch": "Do4", "accidental": "" },
+      "baseNote": {
+        "pitch": "Do4",
+        "accidental": ""
+      },
       "targetInterval": "2da menor ascendente",
-      "targetSolution": { "pitch": "Re4", "accidental": "b" },
+      "targetSolution": {
+        "pitch": "Re4",
+        "accidental": "b"
+      },
       "explanation": "Para una 2da menor ascendente desde Do4: debe ser la nota siguiente inmediata (Re) a distancia de 1 semitono. Por eso la solución correcta es Re bemol (Re♭4). ¡Recuerda que no puede ser Do♯ porque el intervalo de 2da exige cambiar de nombre de nota!"
     },
     {
@@ -104,9 +176,15 @@
       "title": "Completa el intervalo en el pentagrama",
       "prompt": "A partir de <strong>Re4</strong>, coloca en el pentagrama una <strong>3ra menor ascendente</strong>.",
       "instruction": "Haz clic en el pentagrama para ubicar la nota y selecciona la alteración si corresponde.",
-      "baseNote": { "pitch": "Re4", "accidental": "" },
+      "baseNote": {
+        "pitch": "Re4",
+        "accidental": ""
+      },
       "targetInterval": "3ra menor ascendente",
-      "targetSolution": { "pitch": "Fa4", "accidental": "" },
+      "targetSolution": {
+        "pitch": "Fa4",
+        "accidental": ""
+      },
       "explanation": "Para una 3ra menor ascendente desde Re4: contamos 3 notas (Re - Mi - Fa), en el 1er espacio. La distancia entre Re y Fa es de 1 tono y medio (3 semitonos), por lo que Fa natural (Fa4) es la respuesta correcta."
     },
     {
@@ -116,9 +194,15 @@
       "title": "Completa el intervalo en el pentagrama",
       "prompt": "A partir de <strong>Sol4</strong>, coloca en el pentagrama una <strong>4ta Justa ascendente</strong>.",
       "instruction": "Haz clic en el pentagrama para ubicar la nota y confirma tu respuesta.",
-      "baseNote": { "pitch": "Sol4", "accidental": "" },
+      "baseNote": {
+        "pitch": "Sol4",
+        "accidental": ""
+      },
       "targetInterval": "4ta Justa ascendente",
-      "targetSolution": { "pitch": "Do5", "accidental": "" },
+      "targetSolution": {
+        "pitch": "Do5",
+        "accidental": ""
+      },
       "explanation": "Para una 4ta Justa ascendente desde Sol4: contamos 4 notas (Sol - La - Si - Do), situándose en el 3er espacio (Do5). La distancia entre Sol y Do es de 2 tonos y medio (5 semitonos), lo que corresponde a Do natural (Do5)."
     },
     {
@@ -128,10 +212,136 @@
       "title": "Completa el intervalo en el pentagrama",
       "prompt": "A partir de <strong>Re4</strong>, coloca en el pentagrama una <strong>3ra Mayor ascendente</strong>.",
       "instruction": "Haz clic en el pentagrama para situar la nota y selecciona la alteración requerida.",
-      "baseNote": { "pitch": "Re4", "accidental": "" },
+      "baseNote": {
+        "pitch": "Re4",
+        "accidental": ""
+      },
       "targetInterval": "3ra Mayor ascendente",
-      "targetSolution": { "pitch": "Fa4", "accidental": "#" },
+      "targetSolution": {
+        "pitch": "Fa4",
+        "accidental": "#"
+      },
       "explanation": "Para una 3ra Mayor ascendente desde Re4: contamos 3 notas (Re - Mi - Fa). Como Re a Fa natural solo tiene 1 tono y medio, necesitamos agregar un sostenido para alcanzar los 2 tonos (4 semitonos). La respuesta es Fa sostenido (Fa♯4)."
+    },
+    {
+      "id": 11,
+      "type": "scale_name",
+      "category": "2.1 Nombrar Escala",
+      "title": "Identifica la escala mayor a partir de la armadura",
+      "prompt": "Observa la armadura de clave en el pentagrama y escribe el nombre de la escala mayor correspondiente:",
+      "instruction": "Escribe el nombre de la escala (ej: \"La Mayor\", \"Si bemol Mayor\", \"Fa sostenido Mayor\"). No importa si usas mayúsculas o minúsculas.",
+      "keySignature": {
+        "type": "#",
+        "count": 3
+      },
+      "targetScale": "La Mayor",
+      "explanation": "La armadura con 3 sostenidos (Fa♯, Do♯, Sol♯) corresponde a la escala de La Mayor. El último sostenido (Sol♯) es la sensible, que asciende a la tónica (La)."
+    },
+    {
+      "id": 12,
+      "type": "scale_name",
+      "category": "2.1 Nombrar Escala",
+      "title": "Identifica la escala mayor a partir de la armadura",
+      "prompt": "Observa la armadura de clave en el pentagrama y escribe el nombre de la escala mayor correspondiente:",
+      "instruction": "Escribe el nombre de la escala (sin importar mayúsculas o minúsculas).",
+      "keySignature": {
+        "type": "b",
+        "count": 1
+      },
+      "targetScale": "Fa Mayor",
+      "explanation": "La armadura con 1 bemol (Si♭) corresponde a la escala de Fa Mayor. El bemol se ubica en el 4to grado de la escala."
+    },
+    {
+      "id": 13,
+      "type": "scale_name",
+      "category": "2.1 Nombrar Escala",
+      "title": "Identifica la escala mayor a partir de la armadura",
+      "prompt": "Observa la armadura de clave en el pentagrama y escribe el nombre de la escala mayor correspondiente:",
+      "instruction": "Escribe el nombre de la escala (sin importar mayúsculas o minúsculas).",
+      "keySignature": {
+        "type": "#",
+        "count": 1
+      },
+      "targetScale": "Sol Mayor",
+      "explanation": "La armadura con 1 sostenido (Fa♯ en la 5ta línea) corresponde a la escala de Sol Mayor. Fa♯ es el 7mo grado (sensible) que resuelve en Sol."
+    },
+    {
+      "id": 14,
+      "type": "scale_name",
+      "category": "2.1 Nombrar Escala",
+      "title": "Identifica la escala mayor a partir de la armadura",
+      "prompt": "Observa la armadura de clave en el pentagrama y escribe el nombre de la escala mayor correspondiente:",
+      "instruction": "Escribe el nombre de la escala (sin importar mayúsculas o minúsculas).",
+      "keySignature": {
+        "type": "b",
+        "count": 3
+      },
+      "targetScale": "Mi bemol Mayor",
+      "explanation": "La armadura con 3 bemoles (Si♭, Mi♭, La♭) corresponde a la escala de Mi bemol Mayor. Regla práctica: el penúltimo bemol de la armadura (Mi♭) indica el nombre de la escala mayor."
+    },
+    {
+      "id": 15,
+      "type": "scale_name",
+      "category": "2.1 Nombrar Escala",
+      "title": "Identifica la escala mayor a partir de la armadura",
+      "prompt": "Observa la armadura de clave en el pentagrama y escribe el nombre de la escala mayor correspondiente:",
+      "instruction": "Escribe el nombre de la escala (sin importar mayúsculas o minúsculas).",
+      "keySignature": {
+        "type": "b",
+        "count": 4
+      },
+      "targetScale": "La bemol Mayor",
+      "explanation": "La armadura con 4 bemoles (Si♭, Mi♭, La♭, Re♭) corresponde a la escala de La bemol Mayor (el penúltimo bemol es La♭)."
+    },
+    {
+      "id": 16,
+      "type": "scale_build",
+      "category": "2.2 Construir Armadura",
+      "title": "Construye la armadura de clave de la escala",
+      "prompt": "Construye la armadura de clave para la escala de <strong>Re Mayor</strong>:",
+      "instruction": "Selecciona si lleva sostenidos o bemoles y coloca la cantidad correspondiente en la armadura.",
+      "scaleName": "Re Mayor",
+      "explanation": "Re Mayor lleva 2 sostenidos en su armadura: Fa♯ y Do♯."
+    },
+    {
+      "id": 17,
+      "type": "scale_build",
+      "category": "2.2 Construir Armadura",
+      "title": "Construye la armadura de clave de la escala",
+      "prompt": "Construye la armadura de clave para la escala de <strong>Mi Mayor</strong>:",
+      "instruction": "Selecciona si lleva sostenidos o bemoles y coloca la cantidad exacta en la armadura.",
+      "scaleName": "Mi Mayor",
+      "explanation": "Mi Mayor lleva 4 sostenidos en su armadura en orden canónico: Fa♯, Do♯, Sol♯ y Re♯."
+    },
+    {
+      "id": 18,
+      "type": "scale_build",
+      "category": "2.2 Construir Armadura",
+      "title": "Construye la armadura de clave de la escala",
+      "prompt": "Construye la armadura de clave para la escala de <strong>Si bemol Mayor</strong>:",
+      "instruction": "Selecciona si lleva sostenidos o bemoles y coloca la cantidad exacta en la armadura.",
+      "scaleName": "Si bemol Mayor",
+      "explanation": "Si bemol Mayor lleva 2 bemoles en su armadura: Si♭ y Mi♭."
+    },
+    {
+      "id": 19,
+      "type": "scale_build",
+      "category": "2.2 Construir Armadura",
+      "title": "Construye la armadura de clave de la escala",
+      "prompt": "Construye la armadura de clave para la escala de <strong>La Mayor</strong>:",
+      "instruction": "Selecciona si lleva sostenidos o bemoles y coloca la cantidad exacta en la armadura.",
+      "scaleName": "La Mayor",
+      "explanation": "La Mayor lleva 3 sostenidos en su armadura: Fa♯, Do♯ y Sol♯."
+    },
+    {
+      "id": 20,
+      "type": "scale_build",
+      "category": "2.2 Construir Armadura",
+      "title": "Construye la armadura de clave de la escala",
+      "prompt": "Construye la armadura de clave para la escala de <strong>Do Mayor</strong>:",
+      "instruction": "Coloca las alteraciones correspondientes (si no lleva ninguna, confirma con 0 alteraciones).",
+      "scaleName": "Do Mayor",
+      "explanation": "Do Mayor es la escala modelo diatónica natural y no lleva ninguna alteración en su armadura de clave."
     }
   ]
-}
+};
