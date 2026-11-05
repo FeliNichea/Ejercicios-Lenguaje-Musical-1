@@ -37,30 +37,33 @@ class QuizApp {
     this.questionPromptEl = document.getElementById('question-prompt');
     this.questionInstructionEl = document.getElementById('question-instruction');
 
-    // Paneles de interacción Tipo 1 (Intervalos)
+    // Paneles de interacción
     this.optionsContainerEl = document.getElementById('options-container');
     this.interactiveControlsEl = document.getElementById('interactive-controls');
     this.selectedNoteInfoEl = document.getElementById('selected-note-info');
     this.confirmBtnEl = document.getElementById('confirm-answer-btn');
 
-    // Paneles de interacción Tipo 2.1 (Identificar Escala)
-    this.scaleIdentifyControlsEl = document.getElementById('scale-identify-controls');
+    // Paneles Tipo 2: Escalas Mayores
+    this.scaleNameControlsEl = document.getElementById('scale-name-controls');
     this.scaleNameInputEl = document.getElementById('scale-name-input');
-    this.checkScaleBtnEl = document.getElementById('check-scale-btn');
-    this.scaleFormEl = document.getElementById('scale-form');
+    this.submitScaleNameBtn = document.getElementById('submit-scale-name-btn');
 
-    // Paneles de interacción Tipo 2.2 (Construir Armadura)
-    this.scaleBuildControlsEl = document.getElementById('scale-build-controls');
-    this.keyTypeButtons = document.querySelectorAll('.key-type-btn');
-    this.addKeyAccBtn = document.getElementById('add-key-acc-btn');
-    this.removeKeyAccBtn = document.getElementById('remove-key-acc-btn');
-    this.clearKeyAccBtn = document.getElementById('clear-key-acc-btn');
-    this.armaduraStatusTextEl = document.getElementById('armadura-status-text');
-    this.confirmArmaduraBtnEl = document.getElementById('confirm-armadura-btn');
-    this.userKeySig = { type: '#', count: 0 };
+    this.armaduraControlsEl = document.getElementById('armadura-controls');
+    this.armaduraTypeButtons = document.querySelectorAll('.armadura-type-btn');
+    this.armaduraAddBtn = document.getElementById('armadura-add-btn');
+    this.armaduraSubBtn = document.getElementById('armadura-sub-btn');
+    this.armaduraClearBtn = document.getElementById('armadura-clear-btn');
+    this.selectedArmaduraInfoEl = document.getElementById('selected-armadura-info');
+    this.confirmArmaduraBtn = document.getElementById('confirm-armadura-btn');
 
-    // Botones de alteraciones
+    // Estado local para armadura interactiva (Tipo 2.2)
+    this.armaduraType = '#';
+    this.armaduraCount = 0;
+
+    // Botones de alteraciones (Tipo 1.2)
     this.accidentalButtons = document.querySelectorAll('.accidental-btn');
+    this.stepUpBtn = document.getElementById('step-up-btn');
+    this.stepDownBtn = document.getElementById('step-down-btn');
 
     // Feedback y siguiente
     this.feedbackContainerEl = document.getElementById('feedback-container');
@@ -142,8 +145,8 @@ class QuizApp {
     const total = this.questions.length;
     const classifyCount = this.questions.filter(q => q.type === 'classify').length;
     const completeCount = this.questions.filter(q => q.type === 'complete').length;
-    const scaleIdentifyCount = this.questions.filter(q => q.type === 'scale-identify').length;
-    const scaleBuildCount = this.questions.filter(q => q.type === 'scale-build').length;
+    const scaleNameCount = this.questions.filter(q => q.type === 'scale_name').length;
+    const scaleBuildCount = this.questions.filter(q => q.type === 'scale_build').length;
 
     this.filterButtons.forEach(btn => {
       const filter = btn.dataset.filter;
@@ -155,10 +158,10 @@ class QuizApp {
       } else if (filter === 'complete') {
         btn.textContent = `1.2 Completar (${completeCount})`;
         btn.style.display = completeCount > 0 ? '' : 'none';
-      } else if (filter === 'scale-identify') {
-        btn.textContent = `2.1 Identificar Escala (${scaleIdentifyCount})`;
-        btn.style.display = scaleIdentifyCount > 0 ? '' : 'none';
-      } else if (filter === 'scale-build') {
+      } else if (filter === 'scale_name') {
+        btn.textContent = `2.1 Nombrar Escala (${scaleNameCount})`;
+        btn.style.display = scaleNameCount > 0 ? '' : 'none';
+      } else if (filter === 'scale_build') {
         btn.textContent = `2.2 Construir Armadura (${scaleBuildCount})`;
         btn.style.display = scaleBuildCount > 0 ? '' : 'none';
       }
@@ -203,6 +206,21 @@ class QuizApp {
       });
     });
 
+    // Botones de ajuste fino de altura (Tipo 1.2)
+    if (this.stepUpBtn) {
+      this.stepUpBtn.addEventListener('click', () => {
+        if (this.currentQuestionAnswered) return;
+        this.stepInteractiveNote(1);
+      });
+    }
+
+    if (this.stepDownBtn) {
+      this.stepDownBtn.addEventListener('click', () => {
+        if (this.currentQuestionAnswered) return;
+        this.stepInteractiveNote(-1);
+      });
+    }
+
     // Botón confirmar respuesta interactiva
     this.confirmBtnEl.addEventListener('click', () => {
       if (this.currentQuestionAnswered) return;
@@ -219,70 +237,71 @@ class QuizApp {
       this.restartQuiz();
     });
 
-    // Tipo 2.1: Comprobar escala ingresada
-    if (this.checkScaleBtnEl) {
-      this.checkScaleBtnEl.addEventListener('click', () => {
-        if (this.currentQuestionAnswered) return;
-        this.evaluateScaleIdentifyAnswer();
+    // Eventos Tipo 2.1: Escribir nombre de escala
+    if (this.submitScaleNameBtn && this.scaleNameInputEl) {
+      this.submitScaleNameBtn.addEventListener('click', () => {
+        if (!this.currentQuestionAnswered) this.evaluateScaleNameAnswer();
       });
-    }
-    if (this.scaleFormEl) {
-      this.scaleFormEl.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (this.currentQuestionAnswered) return;
-        this.evaluateScaleIdentifyAnswer();
-      });
-    }
 
-    // Tipo 2.2: Construir armadura
-    this.keyTypeButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (this.currentQuestionAnswered) return;
-        const type = btn.dataset.type;
-        this.keyTypeButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        // Al cambiar de tipo, se reinicia la armadura creada anteriormente
-        this.userKeySig = { type: type, count: 0 };
-        this.stave.setKeySignature(type, 0);
-        this.updateArmaduraStatusText();
-      });
-    });
-
-    if (this.addKeyAccBtn) {
-      this.addKeyAccBtn.addEventListener('click', () => {
-        if (this.currentQuestionAnswered) return;
-        if (this.userKeySig.count < 7) {
-          this.userKeySig.count++;
-          this.stave.setKeySignature(this.userKeySig.type, this.userKeySig.count);
-          this.updateArmaduraStatusText();
+      this.scaleNameInputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !this.currentQuestionAnswered) {
+          this.evaluateScaleNameAnswer();
         }
       });
     }
 
-    if (this.removeKeyAccBtn) {
-      this.removeKeyAccBtn.addEventListener('click', () => {
+    // Eventos Tipo 2.2: Construir armadura de clave
+    if (this.armaduraTypeButtons) {
+      this.armaduraTypeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (this.currentQuestionAnswered) return;
+          const newType = btn.dataset.type;
+          // "O se insertan todos sostenidos o se insertan todos bemoles, al cambiar de selección se borra la armadura creada anteriormente"
+          if (this.armaduraType !== newType) {
+            this.armaduraType = newType;
+            this.armaduraCount = 0;
+            this.armaduraTypeButtons.forEach(b => b.classList.toggle('active', b.dataset.type === newType));
+            this.stave.setKeySignature(this.armaduraType, this.armaduraCount);
+            this.updateArmaduraStatus();
+          }
+        });
+      });
+    }
+
+    if (this.armaduraAddBtn) {
+      this.armaduraAddBtn.addEventListener('click', () => {
         if (this.currentQuestionAnswered) return;
-        if (this.userKeySig.count > 0) {
-          this.userKeySig.count--;
-          this.stave.setKeySignature(this.userKeySig.type, this.userKeySig.count);
-          this.updateArmaduraStatusText();
+        if (this.armaduraCount < 7) {
+          this.armaduraCount++;
+          this.stave.setKeySignature(this.armaduraType, this.armaduraCount);
+          this.updateArmaduraStatus();
         }
       });
     }
 
-    if (this.clearKeyAccBtn) {
-      this.clearKeyAccBtn.addEventListener('click', () => {
+    if (this.armaduraSubBtn) {
+      this.armaduraSubBtn.addEventListener('click', () => {
         if (this.currentQuestionAnswered) return;
-        this.userKeySig.count = 0;
-        this.stave.clearKeySignature();
-        this.updateArmaduraStatusText();
+        if (this.armaduraCount > 0) {
+          this.armaduraCount--;
+          this.stave.setKeySignature(this.armaduraType, this.armaduraCount);
+          this.updateArmaduraStatus();
+        }
       });
     }
 
-    if (this.confirmArmaduraBtnEl) {
-      this.confirmArmaduraBtnEl.addEventListener('click', () => {
+    if (this.armaduraClearBtn) {
+      this.armaduraClearBtn.addEventListener('click', () => {
         if (this.currentQuestionAnswered) return;
-        this.evaluateScaleBuildAnswer();
+        this.armaduraCount = 0;
+        this.stave.setKeySignature(this.armaduraType, 0);
+        this.updateArmaduraStatus();
+      });
+    }
+
+    if (this.confirmArmaduraBtn) {
+      this.confirmArmaduraBtn.addEventListener('click', () => {
+        if (!this.currentQuestionAnswered) this.evaluateArmaduraAnswer();
       });
     }
 
@@ -323,9 +342,27 @@ class QuizApp {
     }
   }
 
+  stepInteractiveNote(delta) {
+    if (!this.stave) return;
+    const current = this.stave.interactiveNote;
+    let nextStep;
+    if (current && typeof current.step === 'number') {
+      nextStep = current.step + delta;
+    } else {
+      // Si aún no ha colocado una nota, partimos de la nota base + 2 o de Mi4 (step 2)
+      const base = (this.stave.fixedNotes && this.stave.fixedNotes[0]) ? this.stave.fixedNotes[0].step : 2;
+      nextStep = (delta > 0) ? (base + 2) : (base - 1);
+    }
+    // Rango diatónico válido en el pentagrama con líneas adicionales: -2 (La3) hasta 14 (Do6)
+    nextStep = Math.max(-2, Math.min(14, nextStep));
+    this.stave.setInteractiveNote(nextStep, this.stave.currentAccidental || '');
+  }
+
   applyStaveZoom() {
     const scale = this.zoomScales[this.currentZoomIndex];
     document.documentElement.style.setProperty('--stave-scale', scale.toString());
+    const mobileScale = (scale / 1.05).toFixed(2);
+    document.documentElement.style.setProperty('--stave-mobile-zoom', mobileScale.toString());
 
     if (this.zoomOutBtn) {
       this.zoomOutBtn.disabled = (this.currentZoomIndex === 0);
@@ -374,6 +411,8 @@ class QuizApp {
       this.questionInstructionEl.style.display = 'none';
       this.optionsContainerEl.classList.add('hidden');
       this.interactiveControlsEl.classList.add('hidden');
+      if (this.scaleNameControlsEl) this.scaleNameControlsEl.classList.add('hidden');
+      if (this.armaduraControlsEl) this.armaduraControlsEl.classList.add('hidden');
       this.feedbackContainerEl.classList.add('hidden');
       this.nextBtnEl.classList.add('hidden');
       this.questionCounterEl.textContent = '0 de 0';
@@ -403,6 +442,12 @@ class QuizApp {
     this.feedbackContainerEl.classList.remove('correct', 'incorrect');
     this.nextBtnEl.classList.add('hidden');
 
+    // Ocultar todos los paneles de interacción
+    this.optionsContainerEl.classList.add('hidden');
+    this.interactiveControlsEl.classList.add('hidden');
+    if (this.scaleNameControlsEl) this.scaleNameControlsEl.classList.add('hidden');
+    if (this.armaduraControlsEl) this.armaduraControlsEl.classList.add('hidden');
+
     // Reset de botones de alteración
     this.accidentalButtons.forEach(b => {
       b.classList.toggle('active', b.dataset.accidental === '');
@@ -411,19 +456,56 @@ class QuizApp {
     if (q.type === 'classify') {
       // Modo Clasificar (1.1)
       this.optionsContainerEl.classList.remove('hidden');
-      this.interactiveControlsEl.classList.add('hidden');
-
       this.stave.setViewMode(q.notes);
       this.renderMultipleChoiceOptions(q.options, q.correctAnswer);
     } else if (q.type === 'complete') {
       // Modo Completar (1.2)
-      this.optionsContainerEl.classList.add('hidden');
       this.interactiveControlsEl.classList.remove('hidden');
-
       this.confirmBtnEl.disabled = true;
       this.updateSelectedNoteLabel(null);
       this.stave.setInteractiveMode(q.baseNote);
+    } else if (q.type === 'scale_name') {
+      // Modo 2.1: Nombrar escala a partir de armadura
+      if (this.scaleNameControlsEl) {
+        this.scaleNameControlsEl.classList.remove('hidden');
+        this.scaleNameInputEl.value = '';
+        this.scaleNameInputEl.disabled = false;
+        this.submitScaleNameBtn.disabled = false;
+        setTimeout(() => this.scaleNameInputEl.focus(), 80);
+      }
+      this.stave.setViewMode([], q.keySignature);
+    } else if (q.type === 'scale_build') {
+      // Modo 2.2: Construir armadura
+      if (this.armaduraControlsEl) {
+        this.armaduraControlsEl.classList.remove('hidden');
+        this.armaduraType = '#';
+        this.armaduraCount = 0;
+        this.armaduraTypeButtons.forEach(b => b.classList.toggle('active', b.dataset.type === '#'));
+        this.updateArmaduraStatus();
+        this.confirmArmaduraBtn.disabled = false;
+      }
+      this.stave.setArmaduraMode(this.armaduraType, this.armaduraCount, () => {
+        if (!this.currentQuestionAnswered && this.armaduraCount < 7) {
+          this.armaduraCount++;
+          this.stave.setKeySignature(this.armaduraType, this.armaduraCount);
+          this.updateArmaduraStatus();
+        }
+      });
     }
+  }
+
+  updateArmaduraStatus() {
+    if (!this.selectedArmaduraInfoEl) return;
+    if (this.armaduraCount === 0) {
+      this.selectedArmaduraInfoEl.innerHTML = 'Armadura actual: <strong>Ninguna (0 alteraciones - Do Mayor)</strong>';
+      return;
+    }
+    const typeText = this.armaduraType === '#' ? 'sostenido' : 'bemol';
+    const plural = this.armaduraCount > 1 ? (this.armaduraType === '#' ? 'sostenidos' : 'bemoles') : typeText;
+    const sharpNames = ['Fa♯', 'Do♯', 'Sol♯', 'Re♯', 'La♯', 'Mi♯', 'Si♯'];
+    const flatNames = ['Si♭', 'Mi♭', 'La♭', 'Re♭', 'Sol♭', 'Do♭', 'Fa♭'];
+    const list = (this.armaduraType === '#' ? sharpNames : flatNames).slice(0, this.armaduraCount).join(', ');
+    this.selectedArmaduraInfoEl.innerHTML = `Armadura actual: <strong>${this.armaduraCount} ${plural}</strong> (${list})`;
   }
 
   renderMultipleChoiceOptions(options, correctAnswer) {
@@ -541,6 +623,69 @@ class QuizApp {
         pedagogicalDetail = `Ubicaste la nota en la altura correcta (${userNoteInfo.name}), pero la alteración no es la adecuada. Colocaste <strong>${userFullLabel}</strong> en lugar de <strong>${target.label}</strong>.`;
       }
       this.showFeedback(false, `${pedagogicalDetail}<br><br>${q.explanation}`);
+    }
+
+    this.answersLog.push({ questionId: q.id, isCorrect });
+    this.nextBtnEl.classList.remove('hidden');
+  }
+
+  evaluateScaleNameAnswer() {
+    const rawInput = this.scaleNameInputEl.value.trim();
+    if (!rawInput) {
+      this.scaleNameInputEl.focus();
+      return;
+    }
+
+    this.currentQuestionAnswered = true;
+    this.scaleNameInputEl.disabled = true;
+    this.submitScaleNameBtn.disabled = true;
+
+    const q = this.filteredQuestions[this.currentIndex];
+    const userNorm = NoteParser.normalizeScaleString(rawInput);
+    const targetNorm = NoteParser.normalizeScaleString(q.targetScale);
+
+    const isCorrect = (userNorm === targetNorm);
+
+    if (isCorrect) {
+      this.score += 10;
+      this.scoreCounterEl.textContent = `Puntaje: ${this.score}`;
+      this.showFeedback(true, `¡Excelente! Has identificado correctamente la escala de <strong>${q.targetScale}</strong>.<br>${q.explanation}<br><br><em>En el pentagrama se colocan todas las notas de la escala representadas con puntos negros.</em>`);
+    } else {
+      this.showFeedback(false, `Escribiste "<strong>${rawInput}</strong>". La armadura mostrada corresponde a la escala de <strong>${q.targetScale}</strong>.<br>${q.explanation}<br><br><em>Observa en el pentagrama todas las notas que forman la escala.</em>`);
+    }
+
+    // Al resolver, se colocan en el pentagrama todas las notas con un punto negro sin figura estándar
+    if (q.scaleSteps && q.scaleSteps.length > 0) {
+      this.stave.setScaleNotes(q.scaleSteps);
+    }
+
+    this.answersLog.push({ questionId: q.id, isCorrect });
+    this.nextBtnEl.classList.remove('hidden');
+  }
+
+  evaluateArmaduraAnswer() {
+    this.currentQuestionAnswered = true;
+    this.confirmArmaduraBtn.disabled = true;
+
+    const q = this.filteredQuestions[this.currentIndex];
+    const target = q.targetKeySignature;
+
+    // Do Mayor (count = 0) es correcto con count = 0
+    const isCorrect = (target.count === 0 && this.armaduraCount === 0) ||
+                      (this.armaduraCount === target.count && this.armaduraType === target.type);
+
+    if (isCorrect) {
+      this.score += 10;
+      this.scoreCounterEl.textContent = `Puntaje: ${this.score}`;
+      this.showFeedback(true, `¡Excelente! Construiste correctamente la armadura de <strong>${q.scaleName}</strong>.<br>${q.explanation}<br><br><em>Observa en el pentagrama las notas de la escala.</em>`);
+    } else {
+      let userDesc = this.armaduraCount === 0 ? 'ninguna alteración' : `${this.armaduraCount} ${this.armaduraType === '#' ? (this.armaduraCount > 1 ? 'sostenidos' : 'sostenido') : (this.armaduraCount > 1 ? 'bemoles' : 'bemol')}`;
+      let targetDesc = target.count === 0 ? 'ninguna alteración' : `${target.count} ${target.type === '#' ? (target.count > 1 ? 'sostenidos' : 'sostenido') : (target.count > 1 ? 'bemoles' : 'bemol')}`;
+      this.showFeedback(false, `Colocaste <strong>${userDesc}</strong>. La escala de <strong>${q.scaleName}</strong> lleva <strong>${targetDesc}</strong>.<br><br>${q.explanation}`);
+    }
+
+    if (q.scaleSteps && q.scaleSteps.length > 0) {
+      this.stave.setScaleNotes(q.scaleSteps);
     }
 
     this.answersLog.push({ questionId: q.id, isCorrect });
