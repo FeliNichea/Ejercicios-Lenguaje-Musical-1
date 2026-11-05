@@ -89,6 +89,12 @@ body {
   gap: 0.75rem;
 }
 
+.bank-and-load-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .bank-tag {
   font-size: 0.78rem;
   font-weight: 600;
@@ -137,9 +143,19 @@ body {
   padding: 4px;
   border-radius: 9999px;
   gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.filter-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .filter-pill {
+  flex-shrink: 0;
   border: none;
   background: transparent;
   padding: 6px 14px;
@@ -304,7 +320,7 @@ body {
   max-width: none;
   flex-shrink: 0;
   user-select: none;
-  touch-action: none;
+  touch-action: manipulation;
   transition: width 0.2s ease, height 0.2s ease;
 }
 
@@ -422,6 +438,42 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+.step-adjuster-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.step-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+  color: var(--text-main);
+}
+
+.step-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.step-btn:active {
+  transform: scale(0.96);
+}
+
 .note-status-box {
   display: flex;
   align-items: center;
@@ -449,6 +501,135 @@ body {
   justify-content: flex-end;
 }
 
+/* Controles Modo 2.1: Nombrar Escala */
+.scale-name-controls {
+  margin-bottom: 1.25rem;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.input-action-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.scale-text-input {
+  flex: 1;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.scale-text-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.input-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+/* Controles Modo 2.2: Construir Armadura */
+.armadura-controls {
+  margin-bottom: 1.25rem;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+}
+
+.armadura-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.armadura-btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.armadura-type-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  color: var(--text-main);
+}
+
+.armadura-type-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.armadura-type-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.armadura-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.adjust-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-main);
+  transition: all 0.2s;
+}
+
+.adjust-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.adjust-btn.secondary:hover {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.armadura-status-box {
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.selected-armadura-info {
+  font-size: 0.92rem;
+  color: var(--text-main);
+}
+
 .primary-btn {
   background: var(--primary);
   color: white;
@@ -472,129 +653,6 @@ body {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
-}
-
-/* Controles para Tipo 2.1: Identificar Escala */
-.scale-identify-controls {
-  margin-bottom: 1.25rem;
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.25rem;
-}
-
-.scale-input-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.scale-input-wrapper {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.scale-input {
-  flex: 1;
-  padding: 10px 16px;
-  font-size: 1rem;
-  border: 2px solid var(--border);
-  border-radius: var(--radius-md);
-  background: white;
-  color: var(--text-main);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.scale-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-.input-hint {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-/* Controles para Tipo 2.2: Construir Armadura */
-.scale-build-controls {
-  margin-bottom: 1.25rem;
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1rem;
-}
-
-.key-type-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.2s;
-  color: var(--text-main);
-}
-
-.key-type-btn:hover {
-  border-color: var(--primary);
-  background: var(--primary-light);
-}
-
-.key-type-btn.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-  box-shadow: var(--shadow-sm);
-}
-
-.key-actions-group {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.key-step-btn {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-main);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.key-step-btn:hover:not(:disabled) {
-  border-color: var(--primary);
-  background: var(--primary-light);
-  color: var(--primary);
-}
-
-.key-step-btn.clear:hover:not(:disabled) {
-  border-color: var(--danger);
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-
-.key-step-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.armadura-status-bar {
-  margin-top: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: var(--text-main);
 }
 
 /* Opciones de múltiple choice (Modo 1.1) */
@@ -781,21 +839,260 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Adaptabilidad para móviles */
-@media (max-width: 640px) {
+/* Adaptabilidad para móviles y pantallas reducidas */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0.75rem 1rem;
+  }
+
   .header-content {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 0.75rem;
   }
+
+  .brand-title {
+    justify-content: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .bank-and-load-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .bank-tag {
+    max-width: 140px;
+  }
+
+  .filter-nav {
+    width: 100%;
+    border-radius: 12px;
+    padding: 4px 6px;
+    flex-wrap: wrap;        /* NUEVO */
+    overflow-x: visible;    /* NUEVO */
+  }
+
+  .filter-pill {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    flex: 1 1 auto;         /* NUEVO */
+  }
+
+  /* Tarjeta y Layout */
+  .main-layout {
+    margin: 0.75rem auto;
+    padding: 0 0.5rem;
+  }
+
   .card-header, .card-body, .card-footer {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
   }
+
+  .card-body {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .question-title {
+    font-size: 1.05rem;
+  }
+
+  .question-prompt {
+    font-size: 0.95rem;
+  }
+
+  .question-instruction {
+    font-size: 0.82rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* Pentagrama responsive y zoom flotante */
+  .stave-section-container {
+    position: relative;
+    display: block;
+    margin-bottom: 1.25rem;
+  }
+
+  .stave-lateral-controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  .zoom-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+  }
+
+  .zoom-icon {
+    font-size: 1.1rem;
+  }
+
+  .stave-wrapper {
+    width: 100%;
+    padding: 2.2rem 0.5rem 0.75rem 0.5rem;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    justify-content: center;
+  }
+
+  #stave-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .stave-svg {
+    width: calc(100% * var(--stave-mobile-zoom, 1));
+    min-width: 100%;
+    max-width: none;
+    height: auto;
+    aspect-ratio: 680 / 260;
+  }
+
+  /* Controles interactivos Tipo 1.2 */
   .controls-row {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 0.85rem;
   }
+
+  .accidental-picker, .step-adjuster-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    width: 100%;
+  }
+
+  .accidental-btn-group, .step-btn-group {
+    width: 100%;
+    display: flex;
+  }
+
+  .accidental-btn, .step-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 9px 8px;
+    font-size: 0.85rem;
+    min-height: 42px;
+  }
+
+  .note-status-box {
+    width: 100%;
+  }
+
+  .selected-note-info {
+    font-size: 0.85rem;
+  }
+
+  .action-row {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .action-row .primary-btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Tipo 2.1: Nombre de escala en móvil */
+  .scale-name-controls {
+    padding: 1rem 0.85rem;
+  }
+
+  .input-action-row {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .input-action-row .primary-btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Tipo 2.2: Armadura en móvil */
+  .armadura-controls {
+    padding: 1rem 0.85rem;
+  }
+
+  .armadura-picker {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    width: 100%;
+  }
+
+  .armadura-btn-group {
+    width: 100%;
+  }
+
+  .armadura-type-btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 42px;
+  }
+
+  .armadura-actions {
+    width: 100%;
+    display: flex;
+  }
+
+  .adjust-btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 42px;
+  }
+
+  .armadura-status-box {
+    margin-top: 0.75rem;
+  }
+
+  #confirm-armadura-btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Opciones 1.1 Múltiple Choice */
   .options-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .option-btn {
+    padding: 12px 10px;
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
+  /* Footer */
+  .card-footer {
+    padding: 0.85rem;
+  }
+
+  .next-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
   }
 }
